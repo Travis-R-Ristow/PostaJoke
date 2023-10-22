@@ -46,7 +46,6 @@ userRoute.route('/login').post((req, res) => {
     console.log('login', req.body);
     user_1.default.findOne({ 'email': (0, mongoose_1.sanitizeFilter)(req.body.email) })
         .then((user) => {
-        console.log(user);
         bcrypt_1.default
             .compare(req.body.psw, user.psw)
             .then((isMatch) => {
@@ -69,9 +68,6 @@ userRoute.route('/login').post((req, res) => {
         console.log(e);
         return res.status(500).send('Failed to login');
     });
-});
-userRoute.route('/test').get((req, res) => {
-    return res.status(200).send('Want to hear a joke?');
 });
 exports.default = userRoute;
 //# sourceMappingURL=Users.js.map

@@ -1,5 +1,5 @@
 import express from 'express';
-import USER, { User } from '../Models/user';
+import USER from '../Models/user';
 import bcrypt from "bcrypt";
 import { sanitizeFilter } from 'mongoose';
 
@@ -38,7 +38,6 @@ userRoute.route('/login').post((req, res) => {
 
   USER.findOne({'email': sanitizeFilter(req.body.email)})
     .then((user) => {
-      console.log(user)
       bcrypt
         .compare(req.body.psw, user.psw)
         .then((isMatch) => {
@@ -62,10 +61,5 @@ userRoute.route('/login').post((req, res) => {
       return res.status(500).send('Failed to login');
     });
 });
-
-userRoute.route('/test').get((req, res) => {
-    return res.status(200).send('Want to hear a joke?');
-});
-
 
 export default userRoute;
