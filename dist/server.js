@@ -13,11 +13,14 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 7200;
 app.use((0, cors_1.default)());
 app.use((0, body_parser_1.json)());
-mongoose_1.default.connect('mongodb+srv://chiefbuddy15:NkT7QNS8QdVkvfem@jokecluster0.vbmlyog.mongodb.net/')
+mongoose_1.default
+    .connect('mongodb+srv://chiefbuddy15:NkT7QNS8QdVkvfem@jokecluster0.vbmlyog.mongodb.net/')
     .then(() => {
-    console.log("Database connected.");
+    console.log('Database connected.');
 });
-mongoose_1.default.connection.on('error', (err) => { console.log(err); });
+mongoose_1.default.connection.on('error', (err) => {
+    console.log(err);
+});
 app.use('/jokes', Jokes_1.default);
 Jokes_1.default.all('*', (0, cors_1.default)());
 app.use('/user', Users_1.default);
@@ -27,6 +30,6 @@ Users_1.default.all('*', (0, cors_1.default)());
 //   res.sendFile('build/index.html', { root: './client' })
 // );
 app.listen(PORT, () => {
-    console.log("Server is running on Port: " + PORT);
+    console.log('Server is running on Port:\t' + PORT);
 });
 //# sourceMappingURL=server.js.map

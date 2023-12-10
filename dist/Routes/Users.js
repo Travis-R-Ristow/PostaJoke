@@ -19,7 +19,7 @@ const mongoose_1 = require("mongoose");
 const userRoute = express_1.default.Router();
 userRoute.route('/create-user').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('create-user', req.body);
-    bcrypt_1.default.hash(req.body.psw, 7.20, (err, hash) => {
+    bcrypt_1.default.hash(req.body.psw, 7.2, (err, hash) => {
         if (err) {
             console.log(err);
             return res.status(500).send('Failed to create user');
@@ -30,12 +30,13 @@ userRoute.route('/create-user').post((req, res) => __awaiter(void 0, void 0, voi
                 psw: hash,
                 email: req.body.email
             });
-            newUser.save()
-                .then(savedUser => {
+            newUser
+                .save()
+                .then((savedUser) => {
                 console.log(savedUser);
                 return res.send('User created');
             })
-                .catch(e => {
+                .catch((e) => {
                 console.log(e);
                 return res.status(500).send('Failed to create user');
             });
@@ -44,10 +45,15 @@ userRoute.route('/create-user').post((req, res) => __awaiter(void 0, void 0, voi
 }));
 userRoute.route('/login').post((req, res) => {
     console.log('login', req.body);
-    user_1.default.findOne({ 'email': (0, mongoose_1.sanitizeFilter)(req.body.email) })
+    user_1.default.findOne({ email: (0, mongoose_1.sanitizeFilter)(req.body.email) })
         .then((user) => {
+        var _a;
+        if (!user) {
+            console.log('Error:: Failed to find user');
+            return res.status(500).send('Failed to login');
+        }
         bcrypt_1.default
-            .compare(req.body.psw, user.psw)
+            .compare(req.body.psw, (_a = user.psw) !== null && _a !== void 0 ? _a : '')
             .then((isMatch) => {
             if (isMatch) {
                 return res.send({
@@ -64,7 +70,7 @@ userRoute.route('/login').post((req, res) => {
             return res.status(500).send('Failed to login');
         });
     })
-        .catch(e => {
+        .catch((e) => {
         console.log(e);
         return res.status(500).send('Failed to login');
     });

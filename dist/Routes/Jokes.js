@@ -28,16 +28,18 @@ jokeRoute.route('/getJoke').get((req, res) => __awaiter(void 0, void 0, void 0, 
 jokeRoute.route('/addJoke').post((req, res) => {
     const newJOKE = new joke_1.default(req.body);
     console.log(req.body);
-    newJOKE.save()
+    newJOKE
+        .save()
         .then(() => {
-        res.status(200).json({ 'Joke': 'Joke added successfully.' });
+        res.status(200).json({ Joke: 'Joke added successfully.' });
     })
-        .catch(err => {
+        .catch((err) => {
         console.log(err);
         res.status(500).send('adding new joke failed.');
     });
 });
 jokeRoute.route('/test').get((req, res) => {
+    console.log('test', req.body);
     return res.status(200).send('Want to hear a joke?');
 });
 exports.default = jokeRoute;
