@@ -1,7 +1,8 @@
 import express from 'express';
-import USER, { User } from '../Models/user';
+import USER from '../Models/user';
 import bcrypt from 'bcrypt';
-import { Document, sanitizeFilter } from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { sanitizeFilter } from 'mongoose';
 
 const userRoute = express.Router();
 
@@ -24,7 +25,18 @@ userRoute.route('/create-user').post(async (req, res) => {
         .save()
         .then((savedUser) => {
           console.log(savedUser);
-          return res.send('User created');
+          const tokenObj = {
+            displayName: savedUser.displayName,
+            eml: savedUser.email,
+            id: savedUser._id
+          };
+          const accessToken = jwt.sign(tokenObj, 'testPSW');
+
+          return res.send({
+            displayName: savedUser.displayName,
+            email: savedUser.email,
+            token: accessToken
+          });
         })
         .catch((e) => {
           console.log(e);
@@ -47,12 +59,20 @@ userRoute.route('/login').post((req, res) => {
         .compare(req.body.psw, user.psw ?? '')
         .then((isMatch) => {
           if (isMatch) {
+            const tokenObj = {
+              displayName: user.displayName,
+              eml: user.email,
+              id: user._id
+            };
+            const accessToken = jwt.sign(tokenObj, 'testPSW');
+
             return res.send({
+              displayName: user.displayName,
               email: user.email,
-              displayName: user.displayName
+              token: accessToken
             });
           } else {
-            return res.status(500).send('Failed to login - wrong psw');
+            return res.status(500).send('Failed to login');
           }
         })
         .catch((e) => {

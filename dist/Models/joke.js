@@ -8,15 +8,19 @@ const { Schema } = mongoose_1.default;
 const JOKE = new Schema({
     author: {
         type: Schema.Types.ObjectId,
-        require: true
+        required: true
     },
     joke: {
         type: String,
-        require: true
+        required: true
     },
-    punchLine: {
+    punchline: {
         type: String
-    }
+    },
+    tags: {
+        type: [String]
+    },
+    timestamp: { type: Date, default: Date.now }
 });
 exports.default = mongoose_1.default.model('joke', JOKE);
 //# sourceMappingURL=joke.js.map

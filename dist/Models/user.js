@@ -8,16 +8,16 @@ const { Schema } = mongoose_1.default;
 const USER = new Schema({
     email: {
         type: String,
-        require: true,
+        required: true,
         validate: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}/
     },
     psw: {
         type: String,
-        require: true
+        required: true
     },
     displayName: {
         type: String,
-        require: true
+        required: true
     }
 });
 exports.default = mongoose_1.default.model('user', USER);

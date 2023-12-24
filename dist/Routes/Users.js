@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const user_1 = __importDefault(require("../Models/user"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const mongoose_1 = require("mongoose");
 const userRoute = express_1.default.Router();
 userRoute.route('/create-user').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,7 +35,17 @@ userRoute.route('/create-user').post((req, res) => __awaiter(void 0, void 0, voi
                 .save()
                 .then((savedUser) => {
                 console.log(savedUser);
-                return res.send('User created');
+                const tokenObj = {
+                    displayName: savedUser.displayName,
+                    eml: savedUser.email,
+                    id: savedUser._id
+                };
+                const accessToken = jsonwebtoken_1.default.sign(tokenObj, 'testPSW');
+                return res.send({
+                    displayName: savedUser.displayName,
+                    email: savedUser.email,
+                    token: accessToken
+                });
             })
                 .catch((e) => {
                 console.log(e);
@@ -56,13 +67,20 @@ userRoute.route('/login').post((req, res) => {
             .compare(req.body.psw, (_a = user.psw) !== null && _a !== void 0 ? _a : '')
             .then((isMatch) => {
             if (isMatch) {
+                const tokenObj = {
+                    displayName: user.displayName,
+                    eml: user.email,
+                    id: user._id
+                };
+                const accessToken = jsonwebtoken_1.default.sign(tokenObj, 'testPSW');
                 return res.send({
+                    displayName: user.displayName,
                     email: user.email,
-                    displayName: user.displayName
+                    token: accessToken
                 });
             }
             else {
-                return res.status(500).send('Failed to login - wrong psw');
+                return res.status(500).send('Failed to login');
             }
         })
             .catch((e) => {
